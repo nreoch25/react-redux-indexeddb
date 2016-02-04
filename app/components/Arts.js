@@ -13,12 +13,31 @@ class Arts extends Component{
     });  
   }
 
-  componentWillMount() {
+  fetchContent() {
     this.props.fetchCategories()
       .then((response) => {
         var categories = response.payload.data;
         this.getCategoryId(categories, this.props.route.section)
       })
+  }
+
+  checkIDB() {
+    let db;
+    const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    //Open the Database
+    const request = indexedDB.open("ContentLists");
+    //Handle IDB success event
+    request.onupgradeneeded = (event) => {
+      console.log("NO DB USE API");
+      this.fetchContent();
+    };
+  }
+
+  componentWillMount() {
+
+    //check if Arts Content is loaded into IndexedDB
+    this.checkIDB();
+
   }
 
   renderContent() {
