@@ -1,0 +1,36 @@
+{
+  "name": "react-router-upgrade",
+  "version": "1.0.0",
+  "description": "Upgrade React and React-Router to latest versions",
+  "main": "index.js",
+  "scripts": {
+    "watch": "watchify -d app/browser.js -o dist/bundle.js -v",
+    "build": "browserify -d app/browser.js > dist/bundle.js",
+    "start": "babel-node server"
+  },
+  "author": "Nigel Reoch",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "5.5.6",
+    "babelify": "6.1.2",
+    "browserify": "12.0.1",
+    "express": "4.13.3",
+    "hbs": "4.0.0",
+    "history": "1.13.1",
+    "react": "0.14.3",
+    "react-dom": "0.14.3",
+    "react-router": "2.0.0-rc5",
+    "watchify": "3.6.1"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.9.1",
+    "react-redux": "4.2.1",
+    "redux": "3.2.1",
+    "redux-promise": "^0.5.1"
+  }
+}
