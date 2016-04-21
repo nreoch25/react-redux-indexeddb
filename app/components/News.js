@@ -10,7 +10,7 @@ class News extends Component{
       if(section === cat.name) {
         this.props.fetchContent(cat.id);
       }
-    });  
+    });
   }
 
   componentWillMount() {

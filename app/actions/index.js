@@ -11,7 +11,7 @@ export function fetchCategories() {
   return {
     type: FETCH_CATEGORIES,
     payload: request
-  }; 
+  };
 
 }
 
@@ -32,6 +32,3 @@ export function fetchStory(id) {
     payload: request
   }
 }
-
-
-

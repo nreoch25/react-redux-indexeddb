@@ -2,15 +2,19 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCategories, fetchContent } from "../actions/index";
 import { Link } from "react-router";
+import IndexedDB from "../utils/IndexedDB";
 
 class Arts extends Component{
+  constructor(props) {
+    super(props);
+  }
 
-  getCategoryId(categories, section) {
+  /*getCategoryId(categories, section) {
     categories.map((cat) => {
       if(section === cat.name) {
         this.props.fetchContent(cat.id);
       }
-    });  
+    });
   }
 
   fetchContent() {
@@ -19,25 +23,17 @@ class Arts extends Component{
         var categories = response.payload.data;
         this.getCategoryId(categories, this.props.route.section)
       })
-  }
+  }*/
 
-  checkIDB() {
-    let db;
-    const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    //Open the Database
-    const request = indexedDB.open("ContentLists");
-    //Handle IDB success event
-    request.onupgradeneeded = (event) => {
-      console.log("NO DB USE API");
-      this.fetchContent();
-    };
-  }
+  componentDidMount() {
 
-  componentWillMount() {
+    /*this.props.fetchCategories()
+      .then((response) => {
+        var categories = response.payload.data;
+        this.getCategoryId(categories, this.props.route.section)
+      })*/
 
-    //check if Arts Content is loaded into IndexedDB
-    this.checkIDB();
-
+    IndexedDB.initDB(this.props.route.section);
   }
 
   renderContent() {
