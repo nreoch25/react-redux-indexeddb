@@ -9,10 +9,17 @@ class Arts extends Component{
     super(props);
   }
 
-  /*getCategoryId(categories, section) {
+  getCategoryId(categories, section) {
     categories.map((cat) => {
       if(section === cat.name) {
-        this.props.fetchContent(cat.id);
+        this.props.fetchContent(cat.id)
+          .then((response) => {
+            //Take the content and store it
+            //In proper object store
+            IndexedDB.storeContent(section, response.payload.data, () => {
+              console.log("DATA STORED");
+            });
+          });
       }
     });
   }
@@ -23,17 +30,35 @@ class Arts extends Component{
         var categories = response.payload.data;
         this.getCategoryId(categories, this.props.route.section)
       })
-  }*/
+  }
 
   componentDidMount() {
 
-    /*this.props.fetchCategories()
-      .then((response) => {
-        var categories = response.payload.data;
-        this.getCategoryId(categories, this.props.route.section)
-      })*/
+    let section = this.props.route.section;
 
-    IndexedDB.initDB(this.props.route.section);
+    // Init indexedDB object
+    // Has to be done here so we know window object is available
+    IndexedDB.init();
+
+    //Check if contentDB exists pass callback
+    IndexedDB.dbExists((databaseExists) => {
+      console.log("DBEXISTS:" + databaseExists);
+      //If false the contentDB database will be created
+      //Create the object store for landing content
+      //Move onto to fetchContent
+      if(!databaseExists) {
+
+        IndexedDB.createObjectStore(() => {
+          this.fetchContent();
+        });
+
+      } else {
+        console.log("straight to fetch");
+        this.fetchContent();
+      }
+    });
+
+
   }
 
   renderContent() {
@@ -45,6 +70,7 @@ class Arts extends Component{
         <Link key={story.id} to={`/${pathSection}/${story.sourceId}`}>{story.title}</Link>
       );
     });
+
     return curStories;
   }
 
