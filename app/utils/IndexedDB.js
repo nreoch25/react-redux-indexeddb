@@ -6,10 +6,6 @@ class IndexedDB {
     this.dbVersion = 1;
   }
 
-  checkObjectStore(section, cb) {
-    cb("checking");
-  }
-
   createObjectStore(cb) {
     this.dbVersion++;
     let request = this.indexedDB.open(this.dbName, this.dbVersion);
@@ -22,6 +18,20 @@ class IndexedDB {
     request.onsuccess = function(event) {
       request.result.close();
       cb();
+    }
+  }
+
+  checkObjectStore(section, cb) {
+    let curStore = section.toLowerCase() + "-content";
+    let request = this.indexedDB.open(this.dbName, this.dbversion);
+    request.onsuccess = function(event) {
+      let contentDB = event.target.result;
+      let transaction = contentDB.transaction([curStore], "readwrite");
+      let contentStore = transaction.objectStore(curStore);
+      let contentStoreCountRequest = contentStore.count();
+      contentStore.getAll().onsuccess = function(event) {
+        cb(event.target.result[0]);
+      }
     }
   }
 

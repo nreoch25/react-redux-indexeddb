@@ -7,6 +7,10 @@ import IndexedDB from "../utils/IndexedDB";
 class Arts extends Component{
   constructor(props) {
     super(props);
+    this.indexedContent;
+    this.state = {
+      content: []
+    }
   }
 
   getCategoryId(categories, section) {
@@ -46,16 +50,18 @@ class Arts extends Component{
       //Create the object store for landing content
       //Move onto to fetchContent
       if(!databaseExists) {
+        this.indexedContent = false;
 
         IndexedDB.createObjectStore(() => {
           this.fetchContent();
         });
 
       } else {
+        this.indexedContent = true;
         //Check if object store contains content
         //If true store in content state
         IndexedDB.checkObjectStore(section, (response) => {
-          console.log(response);
+          this.setState({content: response});
         });
       }
     });
@@ -64,10 +70,12 @@ class Arts extends Component{
   }
 
   renderContent() {
-    if(!this.props.content) { return; }
+    let currentContent = [];
+    if(this.indexedContent) { currentContent = this.state.content; }
+    if(!this.indexedContent) { currentContent = this.props.content; }
     const curStories = [];
     const pathSection = this.props.route.section.toLowerCase();
-    this.props.content.map((story) => {
+    currentContent.map((story) => {
       curStories.push(
         <Link key={story.id} to={`/${pathSection}/${story.sourceId}`}>{story.title}</Link>
       );
@@ -80,7 +88,7 @@ class Arts extends Component{
     return (
       <div>
         <h3>Arts</h3>
-        {this.renderContent()}
+        {this.renderContent(this.state.content)}
       </div>
     );
   }
