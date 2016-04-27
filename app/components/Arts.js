@@ -16,8 +16,8 @@ class Arts extends Component{
           .then((response) => {
             //Take the content and store it
             //In proper object store
-            IndexedDB.storeContent(section, response.payload.data, () => {
-              console.log("DATA STORED");
+            IndexedDB.storeContent(section, response.payload.data, (section) => {
+              console.log(`data stored for ${section}`);
             });
           });
       }
@@ -39,7 +39,6 @@ class Arts extends Component{
     // Init indexedDB object
     // Has to be done here so we know window object is available
     IndexedDB.init();
-
     //Check if contentDB exists pass callback
     IndexedDB.dbExists((databaseExists) => {
       console.log("DBEXISTS:" + databaseExists);
@@ -53,8 +52,11 @@ class Arts extends Component{
         });
 
       } else {
-        console.log("straight to fetch");
-        this.fetchContent();
+        //Check if object store contains content
+        //If true store in content state
+        IndexedDB.checkObjectStore(section, (response) => {
+          console.log(response);
+        });
       }
     });
 
